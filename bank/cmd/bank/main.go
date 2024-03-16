@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"bank/internal/account"
+	"bank/internal/currency"
 	"bank/internal/utils"
 )
 
@@ -21,7 +22,7 @@ func main() {
 			fmt.Print("Enter amount: ")
 			input := utils.TakeInput()
 
-			amount, err := utils.ConvertStringAmountToInt(input)
+			amount, err := currency.ConvertStringToAmount(input, "USD")
 			if err != nil {
 				fmt.Println("Invalid Input")
 				break
@@ -38,7 +39,7 @@ func main() {
 			fmt.Print("Enter amount: ")
 			input := utils.TakeInput()
 
-			amount, err := utils.ConvertStringAmountToInt(input)
+			amount, err := currency.ConvertStringToAmount(input, "USD")
 			if err != nil {
 				fmt.Println("Invalid Input")
 				break
@@ -52,7 +53,11 @@ func main() {
 			}
 			break
 		case "3":
-			fmt.Println("Balance: ", utils.ConvertAmountToString(acc.Balance()))
+			bal, err := currency.ConvertAmountToString(acc.Balance(), "USD")
+			if err != nil {
+				fmt.Println("Failure")
+			}
+			fmt.Println("Balance: ", bal)
 		case "4":
 			os.Exit(0)
 		}
