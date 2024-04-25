@@ -4,3 +4,4 @@ Use this to learn, practice and read low level designs in go.
 
 ## List
 1. Bank - Low level design for a simple banking problem.
+2. ParkingLot - Low level design for a parking lot.
