@@ -14,7 +14,7 @@ Design a parking lot.
 5. Multiple Floors: The parking lot has multiple floors with each floor having various sections.
 
 #### Extension
-1. Multiple Entry and Exit.
+1. Multiple Entry and Exit. 
 
 ## Appendix
 ### Clarification Questions
