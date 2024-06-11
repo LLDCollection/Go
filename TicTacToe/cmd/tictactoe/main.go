@@ -49,4 +49,12 @@ func main() {
 	} else {
 		fmt.Printf("Winner is Player %d\n", game.Winner() + 1)	
 	}
+
+	fmt.Println("Would you like to play again? (Y/N)")
+	
+	var input string
+	fmt.Scan(&input)
+	if input == "y" || input == "Y" {
+		main()
+	}
 }
