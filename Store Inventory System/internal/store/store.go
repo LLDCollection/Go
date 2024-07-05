@@ -8,7 +8,7 @@ import (
 
 type Store interface {
 	AddStock(products []Product)
-	RemoveStock(name string, number int)
+	RemoveStock(name string, number int) error
 	QueryStock(product string) StockResult
 
 	SetNextStore(store Store)
@@ -38,6 +38,13 @@ type Address struct {
 	City    string
 	State   string
 	Zipcode string
+}
+
+func NewStore(storeId string) Store {
+	return &StoreImpl{
+		Id:        storeId,
+		Inventory: make(map[string][]Product),
+	}
 }
 
 func (s *StoreImpl) AddStock(products []Product) {
