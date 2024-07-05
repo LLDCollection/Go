@@ -9,7 +9,7 @@ import (
 type Store interface {
 	AddStock(products []Product)
 	RemoveStock(name string, number int)
-	QueryStock(product string)
+	QueryStock(product string) StockResult
 
 	SetNextStore(store Store)
 }
@@ -50,10 +50,10 @@ func (s *StoreImpl) AddStock(products []Product) {
 }
 
 func (s *StoreImpl) RemoveStock(productName string, number int) error {
-	s.Lock.RLock()
-	stock, ok := s.Inventory[productName]
-	s.Lock.RUnlock()
+	s.Lock.Lock()
+	defer s.Lock.Unlock()
 
+	stock, ok := s.Inventory[productName]
 	if !ok {
 		return errors.New("product not available")
 	}
@@ -62,30 +62,25 @@ func (s *StoreImpl) RemoveStock(productName string, number int) error {
 		return fmt.Errorf("product count is only %v but removal request sent for %v", len(stock), number)
 	}
 
-	s.Lock.RLock()
 	s.Inventory[productName] = s.Inventory[productName][:len(stock)-number]
-	s.Lock.RUnlock()
 
 	return nil
 }
 
 func (s *StoreImpl) QueryStock(productName string) StockResult {
-	stockResult := StockResult{}
-
 	s.Lock.RLock()
 	stock, ok := s.Inventory[productName]
 	s.Lock.RUnlock()
 
-	if !ok {
-		if s.Next == nil {
-			return stockResult
-		}
+	if ok {
+		return StockResult{StoreId: s.Id, Count: len(stock)}
 	}
 
-	return StockResult{
-		StoreId: s.Id,
-		Count:   len(stock),
+	if s.Next != nil {
+		return s.Next.QueryStock(productName)
 	}
+
+	return StockResult{}
 }
 
 func (s *StoreImpl) SetNextStore(store Store) {
